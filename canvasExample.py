@@ -1,12 +1,13 @@
 from tkinter import *
 from tkinter import ttk
+
 root = Tk()
 
-h = ttk.Scrollbar(root, orient=HORIZONTAL)
-v = ttk.Scrollbar(root, orient=VERTICAL)
+h, v = ttk.Scrollbar(root, orient=HORIZONTAL), ttk.Scrollbar(root, orient=VERTICAL)
+
 canvas = Canvas(root, scrollregion=(0, 0, 1000, 1000), yscrollcommand=v.set, xscrollcommand=h.set)
-h['command'] = canvas.xview
-v['command'] = canvas.yview
+
+h['command'], v['command'] = canvas.xview, canvas.yview
 
 canvas.grid(column=0, row=0, sticky=(N,W,E,S))
 h.grid(column=0, row=1, sticky=(W,E))
@@ -48,7 +49,6 @@ toRects = [
     ((10, 35, 30, 55), "blue", ('palette', 'paletteblue')),
     ((10, 60, 30, 80), "black", ('palette', 'paletteblack', 'paletteSelected'))
 ]
-
 
 for b,f in toBind:
     canvas.bind(b, f)
