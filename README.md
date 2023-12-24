@@ -13,7 +13,7 @@ I want:
 Use `ttk.Notebook`.
 
 ### Markdown
-Render-edit, like jupyter cells?
+Render-edit, like jupyter cells
 
 ### Wikilinking
 When parsing markdown:

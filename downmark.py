@@ -1,36 +1,46 @@
 import tkinter as tk
 from tkinter import ttk
+from threading import Thread
 
-def create_tab(notebook, title, content):
-    """ Create a tab with specified title and content. """
-    frame = ttk.Frame(notebook)
-    notebook.add(frame, text=title)
-    label = ttk.Label(frame, text=content, padding=10)
-    label.pack(expand=True)
+class Notebook:
+    def __init__(self, parent):
+        self.parent = parent
+        self.notebook = self.setupNotebook()
+        self.tabs = self.loadTabs()
+    
+    def loadTabs(self):
+        tabTitles = ["Tab 1", "Tab 2"]
 
-def setup_notebook(parent):
-    """ Setup the notebook widget and its tabs. """
-    notebook = ttk.Notebook(parent)
-    notebook.pack(expand=True, fill='both')
-    return notebook
+        textWidgets = {}
+        for title in tabTitles:
+            textWidget = self.createTextTab(title)
+            textWidgets[title] = textWidget
+        
+        return textWidgets
+    
+    def setupNotebook(self):
+        notebook = ttk.Notebook(self.parent)
+        notebook.pack(expand=True, fill='both')
+        
+        return notebook
 
-def main():
-    """ Main function to create the main window and add tabs. """
+    def createTextTab(self, title):
+        frame = ttk.Frame(self.notebook)
+        self.notebook.add(frame, text=title)
+        
+        textWidget = tk.Text(frame, wrap="word", width=40, height=10)
+        textWidget.pack(expand=True, fill='both', padx=5, pady=5)
+    
+        return textWidget
+
+def launchDownmark():
     root = tk.Tk()
-    root.title("ttk.Notebook Demo")
-
-    notebook = setup_notebook(root)
-
-    # Tab titles and contents can be easily modified or extended
-    tabs = [
-        ("Tab 1", "This is the first tab"),
-        ("Tab 2", "This is the second tab")
-    ]
-
-    for title, content in tabs:
-        create_tab(notebook, title, content)
+    root.title("Downmark")
+    global notebook
+    notebook = Notebook(root)
 
     root.mainloop()
 
-if __name__ == "__main__":
-    main()
+
+th = Thread(target=launchDownmark)
+th.start()
