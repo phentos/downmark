@@ -31,5 +31,5 @@ Plain-text storage as markdown, in a way that's web-navigable maybe? e.g. `[foo]
 
 ## Nifties
 i.e. features i think would be cool
-[^1] show a "peak" of a tab when hovered
-[^2] search, favorites, tags organization
+[^1]: show a "peak" of a tab when hovered
+[^2]: search, favorites, tags organization
