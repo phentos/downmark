@@ -29,7 +29,7 @@ class Notebook:
         return nb.nametowidget(frameName)
     
     def getCurrentText(self):
-        return self.getCurrentFrame().winfo_children()[0]
+        return self.tabs[self.getCurrentFrame()].textWidget
 
     def loadTabs(self):
         tabTitles = ["Tab 1", "Tab 2"]
@@ -38,8 +38,8 @@ class Notebook:
         for title in tabTitles:
             newFrame = ttk.Frame(self.notebook)
             textWidget = self.createTextTab(newFrame, title)
-            textWidgets[title] = textWidget
-            self.notebook.add(newFrame, text=f"Frame {title}")
+            textWidgets[newFrame] = textWidget
+            self.notebook.add(newFrame, text=title)
 
         return textWidgets
     
