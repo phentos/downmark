@@ -21,9 +21,16 @@ class Notebook:
             self.notebook.bind(e, f)
 
     def onTabChanged(self, event):
+        self.getCurrentText().focus_set()
+    
+    def getCurrentFrame(self):
         nb = self.notebook
-        nb.nametowidget(nb.select()).winfo_children()[0].focus_set()
-            
+        frameName = nb.select()
+        return nb.nametowidget(frameName)
+    
+    def getCurrentText(self):
+        return self.getCurrentFrame().winfo_children()[0]
+
     def loadTabs(self):
         tabTitles = ["Tab 1", "Tab 2"]
 
