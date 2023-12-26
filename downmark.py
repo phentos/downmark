@@ -79,6 +79,18 @@ class Notebook:
         def anyKeyPressed(self, event):
             if self.textWidget.edit_modified():
                 self.textWidget.edit_separator()
+            if event.char == ']' and not self.linkScan(event):
+                return 'break'
+        
+        def linkScan(self, event):
+            textWidget = event.widget
+            right = textWidget.index("insert")
+            left = textWidget.search('[', right, backwards=True, stopindex="1.0")
+            if left:
+                return self.handleLink(left, right)                
+
+        def handleLink(self, left, right):
+            pass
         
         def setEnableState(self, newState):
             self.textWidget['state'] = {True: 'normal', False: 'disabled'}[newState]
