@@ -1,6 +1,6 @@
 import tkinter as tk
-from tkinter import ttk
-from tkinter import messagebox
+from tkinter import ttk, font, messagebox
+
 
 from threading import Thread
 import sys
@@ -57,6 +57,19 @@ class Notebook:
             self.textWidget.pack(expand=True, fill='both', padx=5, pady=5)
             self.enabled = True
             self.__bindEvents()
+            self.buildFonts()
+        
+        def buildFonts(self):
+            boldFont = font.Font(self.textWidget, self.textWidget.cget('font'))
+            boldFont.configure(weight="bold")
+            self.textWidget.tag_configure("bold", font=boldFont)
+            self.textWidget.tag_configure("bluebg", background="blue")
+            
+        def applyBlueBackgroundToRange(self, left, right):
+            self.textWidget.tag_add("bluebg", left, right)
+        
+        def applyBoldToRange(self, left, right):
+            self.textWidget.tag_add("bold", left, right)
         
         def __bindEvents(self):
             binds = [
@@ -83,14 +96,14 @@ class Notebook:
                 return 'break'
         
         def linkScan(self, event):
-            textWidget = event.widget
-            right = textWidget.index("insert")
-            left = textWidget.search('[', right, backwards=True, stopindex="1.0")
+            right = self.textWidget.index("insert")
+            left = self.textWidget.search('[', right, backwards=True, stopindex="1.0")
             if left:
-                return self.handleLink(left, right)                
+                return self.handleLink(left, right)
 
         def handleLink(self, left, right):
-            pass
+            self.applyBlueBackgroundToRange(left, right)
+            return True
         
         def setEnableState(self, newState):
             self.textWidget['state'] = {True: 'normal', False: 'disabled'}[newState]
@@ -99,6 +112,12 @@ class Notebook:
         def toggleReadOnly(self, event):
             toggleState = not self.enabled
             self.setEnableState(toggleState)
+        
+        def shiftIndex(self, index, drow=0, dcol=0):
+            row, col = (int(_) for _ in index.split('.'))
+            row += drow
+            col += dcol
+            return f"{row}.{col}"            
 
 def launchDownmark():
     root = tk.Tk()
