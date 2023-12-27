@@ -64,12 +64,10 @@ class Notebook:
             boldFont.configure(weight="bold")
             self.textWidget.tag_configure("bold", font=boldFont)
             self.textWidget.tag_configure("bluebg", background="blue")
-            
-        def applyBlueBackgroundToRange(self, left, right):
-            self.textWidget.tag_add("bluebg", left, right)
-        
-        def applyBoldToRange(self, left, right):
-            self.textWidget.tag_add("bold", left, right)
+            self.textWidget.tag_configure("light", foreground='#808080')    
+
+        def applyTagToRange(self, tag, left, right):
+            self.textWidget.tag_add(tag, left, right)
         
         def __bindEvents(self):
             binds = [
@@ -92,18 +90,25 @@ class Notebook:
         def anyKeyPressed(self, event):
             if self.textWidget.edit_modified():
                 self.textWidget.edit_separator()
-            if event.char == ']' and not self.linkScan(event):
-                return 'break'
-        
+            if event.char == ']':
+                self.linkScan(event)
+                
         def linkScan(self, event):
             right = self.textWidget.index("insert")
-            left = self.textWidget.search('[', right, backwards=True, stopindex="1.0")
-            if left:
-                return self.handleLink(left, right)
+            left = right
+
+            while left != '1.0':
+                left = self.textWidget.index(f"{left} -1 char")
+                char = self.textWidget.get(left)
+                
+                if char == '[':
+                    return self.handleLink(left, right)
+                if char == ']':
+                    return
 
         def handleLink(self, left, right):
-            self.applyBlueBackgroundToRange(left, right)
-            return True
+            left = self.shiftIndex(left, dcol=1)
+            self.applyTagToRange("light", left, right)
         
         def setEnableState(self, newState):
             self.textWidget['state'] = {True: 'normal', False: 'disabled'}[newState]
