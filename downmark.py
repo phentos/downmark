@@ -14,11 +14,23 @@ class Notebook:
     
     def __bindEvents(self):
         binds = [
-            ("<<NotebookTabChanged>>", self.onTabChanged)
+            ("<<NotebookTabChanged>>", self.onTabChanged),
+            ("<<childBorn>>", self.onChildBorn)
         ]
         
         for e,f in binds:
-            self.notebook.bind(e, f)
+            self.notebook.bind_all(e, f)
+
+    def onChildBorn(self, event):
+        childTitle = 'CHILD'
+        newFrame = ttk.Frame(self.notebook)
+        textWidget = self.createTextTab(newFrame, childTitle)
+        
+        self.tabs[newFrame] = textWidget
+        self.notebook.add(newFrame, text=childTitle)
+
+        self.notebook.select(newFrame)
+        textWidget.textWidget.focus_set()
 
     def onTabChanged(self, event):
         self.getCurrentText().focus_set()
@@ -32,7 +44,7 @@ class Notebook:
         return self.tabs[self.getCurrentFrame()].textWidget
 
     def loadTabs(self):
-        tabTitles = ["Tab 1", "Tab 2"]
+        tabTitles = ["0"]
 
         textWidgets = {}
         for title in tabTitles:
@@ -53,6 +65,7 @@ class Notebook:
     
     class textTab:
         def __init__(self, parent, title):
+            self.parent = parent
             self.textWidget = tk.Text(parent, wrap="word", width=40, height=10, undo=True)
             self.textWidget.pack(expand=True, fill='both', padx=5, pady=5)
             self.enabled = True
@@ -109,6 +122,8 @@ class Notebook:
         def handleLink(self, left, right):
             left = self.shiftIndex(left, dcol=1)
             self.applyTagToRange("light", left, right)
+            
+            root.event_generate("<<childBorn>>")
         
         def setEnableState(self, newState):
             self.textWidget['state'] = {True: 'normal', False: 'disabled'}[newState]
@@ -125,6 +140,7 @@ class Notebook:
             return f"{row}.{col}"            
 
 def launchDownmark():
+    global root
     root = tk.Tk()
     root.title("Downmark")
     global notebook
