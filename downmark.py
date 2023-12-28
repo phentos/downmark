@@ -109,6 +109,7 @@ class Notebook:
         def linkScan(self, event):
             right = self.textWidget.index("insert")
             left = right
+            breakChars = [']', '\n']
 
             while left != '1.0':
                 left = self.textWidget.index(f"{left}-1c")
@@ -116,7 +117,7 @@ class Notebook:
                 
                 if char == '[':
                     return self.handleLink(left, right)
-                if char == ']':
+                if char in breakChars:
                     return
 
         def handleLink(self, left, right):
