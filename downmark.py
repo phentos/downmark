@@ -111,7 +111,7 @@ class Notebook:
             left = right
 
             while left != '1.0':
-                left = self.textWidget.index(f"{left} -1 char")
+                left = self.textWidget.index(f"{left}-1c")
                 char = self.textWidget.get(left)
                 
                 if char == '[':
@@ -120,8 +120,7 @@ class Notebook:
                     return
 
         def handleLink(self, left, right):
-            left = self.shiftIndex(left, dcol=1)
-            self.applyTagToRange("light", left, right)
+            self.applyTagToRange("light", f"{left}+1c", right)
             
             root.event_generate("<<childBorn>>")
         
@@ -131,13 +130,7 @@ class Notebook:
         
         def toggleReadOnly(self, event):
             toggleState = not self.enabled
-            self.setEnableState(toggleState)
-        
-        def shiftIndex(self, index, drow=0, dcol=0):
-            row, col = (int(_) for _ in index.split('.'))
-            row += drow
-            col += dcol
-            return f"{row}.{col}"            
+            self.setEnableState(toggleState)     
 
 def launchDownmark():
     global root
